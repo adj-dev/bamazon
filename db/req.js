@@ -22,25 +22,8 @@ const connection = mysql.createConnection({
 
 
 
-// Connect to the database
-function connect() {
-  connection.connect(function (err) {
-    if (err) throw err;
-  });
-}
-
-
-
-// Disconnect from the database
-function disconnect() {
-  connection.end();
-}
-
-
-
 // Get current items from database
 function fetchProducts(callback) {
-  connect();
   connection.query(
     'SELECT * FROM products',
     function (err, res) {
@@ -50,7 +33,6 @@ function fetchProducts(callback) {
         let { item_id, product_name, department_name, price, stock_quantity } = item;
         return { item_id, product_name, department_name, price, stock_quantity };
       });
-      disconnect();
       // Send the results back via callback
       callback(products);
     }
@@ -59,4 +41,44 @@ function fetchProducts(callback) {
 
 
 
-module.exports = { fetchProducts };
+// Get a product by id
+function fetchStockQuantityById(id, callback, error) {
+  connection.query(
+    'SELECT stock_quantity, price FROM products WHERE ?',
+    {
+      item_id: id
+    },
+    function (err, res) {
+      if (err) throw err;
+      // Return an error message if id doesn't exist in database
+      if (!res.length) {
+        return error('Something went wrong, please re-enter the id');
+      }
+      // let quantity = res[0].stock_quantity;
+      let { stock_quantity, price } = res[0];
+      callback(stock_quantity, price);
+    }
+  )
+}
+
+
+
+// Send an order request to the database
+function order(item_id, quantity) {
+  connection.query(
+    'UPDATE products SET stock_quantity = stock_quantity - ? WHERE ?',
+    [
+      quantity,
+      {
+        item_id
+      }
+    ],
+    function (err, res) {
+      if (err) throw err;
+    }
+  )
+}
+
+
+
+module.exports = { fetchProducts, order, fetchStockQuantityById };
