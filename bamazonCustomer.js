@@ -18,13 +18,13 @@ function showCatalog() {
   database.fetchProducts(products => {
     // Instantiate a new cli-table
     let table = new Table({
-      head: ['ID', 'Product Name', 'Department', 'Price', 'Stock Quantity']
+      head: ['ID', 'Product Name', 'Price']
     });
 
-    // Iterate through each product and push relevant to the table array
+    // Iterate through each product and push relevant data to the table array
     products.forEach(product => {
-      let { item_id, product_name, department_name, price, stock_quantity } = product;
-      table.push([item_id, product_name, department_name, `$${price}`, stock_quantity]);
+      let { item_id, product_name, price } = product;
+      table.push([item_id, product_name, `$${price}`]);
     });
 
     // Display the table
