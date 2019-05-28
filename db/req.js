@@ -102,11 +102,12 @@ function checkId(id, error) {
 
 
 // Send an order request to the database
-function order(item_id, quantity) {
+function order(item_id, quantity, totalSale) {
   connection.query(
-    'UPDATE products SET stock_quantity = stock_quantity - ? WHERE ?',
+    'UPDATE products SET stock_quantity = stock_quantity - ?, product_sales = product_sales + ? WHERE ?',
     [
       quantity,
+      totalSale,
       {
         item_id
       }

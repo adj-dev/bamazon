@@ -7,7 +7,7 @@ const database = require("./db/req.js");
 
 // Helper function for calculating total cost
 function totalCost(price, quantity) {
-  return `$${price * quantity}`
+  return `${price * quantity}`
 }
 
 
@@ -75,8 +75,10 @@ function promptCustomer() {
           console.log(`\n\nSorry, insufficient quantity!\n\n`);
           promptCustomer();
         } else {
-          database.order(id, quantity);
-          console.log(`\n\nTotal: ${totalCost(price, quantity)}\n\n`);
+          // Calculate the total sale amount
+          let total = totalCost(price, quantity);
+          database.order(id, quantity, total);
+          console.log(`\n\nTotal: $${total}\n\n`);
           promptPurchase();
         }
       }, err => { // Error handler specifically for id's that don't exist in the database
