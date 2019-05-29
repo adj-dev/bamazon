@@ -95,6 +95,7 @@ function checkId(id, error) {
       if (!res.length) {
         return error('Something went wrong, please re-enter the id')
       }
+      return error();
     }
   )
 }
